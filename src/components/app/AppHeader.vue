@@ -29,14 +29,14 @@ import { apps, helpCircleOutline, personCircle, settingsOutline } from 'ionicons
       <template v-else>
         <ion-searchbar></ion-searchbar>
         <ion-buttons slot="end">
-          <ion-button>
+          <ion-button class="ion-display-none ion-display-md-inline">
             <ion-icon slot="icon-only" :icon="settingsOutline"></ion-icon>
           </ion-button>
-          <ion-button>
+          <ion-button class="ion-display-none ion-display-md-inline">
             <ion-icon slot="icon-only" :icon="helpCircleOutline"></ion-icon>
           </ion-button>
-          <ion-button> Actualizar </ion-button>
-          <ion-button>
+          <ion-button class="ion-display-none ion-display-md-inline"> Actualizar </ion-button>
+          <ion-button class="ion-display-none ion-display-md-inline">
             <ion-icon slot="icon-only" :icon="apps"></ion-icon>
           </ion-button>
           <ion-button>
