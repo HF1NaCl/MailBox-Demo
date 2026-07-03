@@ -1,5 +1,5 @@
 {
-  "name": "Test-UI",
+  "name": "mailbox-demo",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -12,6 +12,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@capacitor/android": "^8.4.1",
     "@capacitor/app": "8.1.0",
     "@capacitor/core": "8.4.1",
     "@capacitor/haptics": "8.0.2",
@@ -39,5 +40,5 @@
     "vitest": "^0.34.6",
     "vue-tsc": "^2.1.10"
   },
-  "description": "An Ionic project"
+  "description": "Email Client Layout Demo"
 }
