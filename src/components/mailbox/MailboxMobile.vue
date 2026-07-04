@@ -1,4 +1,20 @@
 <script setup lang="ts">
+import {
+  IonAvatar,
+  IonCard,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonCol,
+  IonFab,
+  IonFabButton,
+  IonGrid,
+  IonIcon,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonRow,
+} from '@ionic/vue';
 import { pencil, starOutline } from 'ionicons/icons';
 </script>
 
