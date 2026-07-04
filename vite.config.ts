@@ -8,6 +8,7 @@ import { defineConfig } from 'vite';
 // base: '/MailBox-Demo/'
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/MailBox-Demo/',
   plugins: [vue(), legacy()],
   resolve: {
     alias: {
