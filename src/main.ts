@@ -34,8 +34,28 @@ import '@ionic/vue/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import { useMocks } from './config/env';
+
 const app = createApp(App).use(IonicVue).use(router);
 
-router.isReady().then(() => {
-  app.mount('#app');
-});
+async function enableMocking() {
+  if (!useMocks || !import.meta.env.DEV || !('serviceWorker' in navigator)) return;
+
+  const { worker } = await import('./mocks/browser');
+
+  return worker.start({
+    serviceWorker: {
+      url: `${import.meta.env.BASE_URL}mockServiceWorker.js`,
+    },
+  });
+}
+
+enableMocking()
+  .catch((error) => {
+    console.error('MSW failed to start:', error);
+  })
+  .finally(() => {
+    router.isReady().then(() => {
+      app.mount('#app');
+    });
+  });
