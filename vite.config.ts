@@ -5,10 +5,9 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import { defineConfig } from 'vite';
 
-// base: '/MailBox-Demo/',
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/',
+  base: process.env.GITHUB_PAGES === 'true' ? '/MailBox-Demo/' : '/',
   plugins: [vue(), legacy()],
   resolve: {
     alias: {
@@ -20,3 +19,4 @@ export default defineConfig({
     environment: 'jsdom',
   },
 });
+
