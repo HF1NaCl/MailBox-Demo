@@ -1,11 +1,31 @@
-import type { Mail } from '@/types/Mail';
+import type { Mail, MailSender } from '@/types/Mail';
 
-const senders = [
-  ['Ionic Team', 'team@ionic.io'],
-  ['Vue Updates', 'news@vuejs.org'],
-  ['Capacitor Bot', 'bot@capacitorjs.com'],
-  ['Soporte App', 'soporte@mailbox.dev'],
-  ['GitHub', 'notifications@github.com'],
+const senders: MailSender[] = [
+  {
+    name: 'Ionic Team',
+    mail: 'team@ionic.io',
+    avatar: 'https://i.pravatar.cc/80?img=1',
+  },
+  {
+    name: 'Vue Updates',
+    mail: 'news@vuejs.org',
+    avatar: 'https://i.pravatar.cc/80?img=2',
+  },
+  {
+    name: 'Capacitor Bot',
+    mail: 'bot@capacitorjs.com',
+    avatar: 'https://i.pravatar.cc/80?img=3',
+  },
+  {
+    name: 'Soporte App',
+    mail: 'soporte@mailbox.dev',
+    avatar: 'https://i.pravatar.cc/80?img=4',
+  },
+  {
+    name: 'GitHub',
+    mail: 'notifications@github.com',
+    avatar: 'https://i.pravatar.cc/80?img=5',
+  },
 ];
 
 const subjects = [
@@ -23,11 +43,7 @@ export const mockMails: Mail[] = Array.from({ length: 50 }, (_, index) => {
     id: String(index + 1),
     title: `Correo ${index + 1}`,
     subject: subjects[index % subjects.length],
-    sender: {
-      name: sender[0],
-      avatar: `https://i.pravatar.cc/80?img=${(index % 50) + 1}`,
-      mail: sender[1],
-    },
+    sender,
     message: `Contenido de prueba para el correo ${index + 1}.`,
     receivedAt: new Date(Date.now() - index * 60 * 60 * 1000),
     isFavorite: index % 7 === 0,

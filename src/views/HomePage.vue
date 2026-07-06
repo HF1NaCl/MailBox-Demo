@@ -5,9 +5,22 @@ import { capacitorPlatform } from '@/composables/capacitor';
 import MailboxMobile from '@/components/mailbox/MailboxMobile.vue';
 import { onMounted } from 'vue';
 import { pencil } from 'ionicons/icons';
-import { useMails } from '@/composables/useMail';
+import { useMails } from '@/composables/useMails';
+import MailboxWeb from '@/components/mailbox/MailboxWeb.vue';
 
-const { mails, loadMails, toggleFavorite, markAsRead } = useMails();
+const {
+  mails,
+  selectedMailIds,
+  selectedCount,
+  allMailsSelected,
+  hasSelectedMails,
+  loadMails,
+  resetMails,
+  toggleMailSelection,
+  toggleAllMailsSelection,
+  toggleFavorite,
+  markAsRead,
+} = useMails();
 
 onMounted(async () => {
   loadMails();
@@ -18,16 +31,32 @@ onMounted(async () => {
   <ion-page>
     <AppHeader />
     <ion-content>
-      <div id="container" class="ion-padding">
+      <div id="container">
         <MailboxMobile
           v-if="capacitorPlatform !== 'web'"
           :mails="mails"
+          :selected-mail-ids="selectedMailIds"
+          :selected-count="selectedCount"
+          :has-selected-mails="hasSelectedMails"
+          :all-mails-selected="allMailsSelected"
+          @toggle-selection="toggleMailSelection"
+          @toggle-all-selection="toggleAllMailsSelection"
+          @toggle-favorite="toggleFavorite"
+          @open-mail="markAsRead"
+          @reset-mails="resetMails"
+        />
+        <MailboxWeb
+          v-else
+          :mails="mails"
+          :selected-mail-ids="selectedMailIds"
+          :selected-count="selectedCount"
+          :has-selected-mails="hasSelectedMails"
+          @reset-mails="resetMails"
+          @toggle-selection="toggleMailSelection"
+          @toggle-all-selection="toggleAllMailsSelection"
           @toggle-favorite="toggleFavorite"
           @open-mail="markAsRead"
         />
-        <template v-else>
-          <h1>Web</h1>
-        </template>
       </div>
       <ion-fab
         v-if="capacitorPlatform !== 'web'"

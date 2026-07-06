@@ -1,81 +1,73 @@
 <script setup lang="ts">
-import { Mail } from '@/types/Mail';
+import type { Mail } from '@/types/Mail';
 import {
-  IonAvatar,
   IonCard,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonCol,
-  IonGrid,
   IonIcon,
   IonLabel,
   IonList,
   IonListHeader,
-  IonRippleEffect,
-  IonRow,
+  IonRefresher,
+  IonRefresherContent,
+  type RefresherCustomEvent,
 } from '@ionic/vue';
-import { star, starOutline } from 'ionicons/icons';
+import { checkboxOutline, squareOutline } from 'ionicons/icons';
+import MobileItem from './mobile/MobileItem.vue';
 
-defineProps<{
+const props = defineProps<{
   mails: Mail[];
+  selectedMailIds: Set<string>;
+  selectedCount: number;
+  hasSelectedMails: boolean;
+  allMailsSelected: boolean;
 }>();
 
 const emit = defineEmits<{
   openMail: [mailId: string];
   toggleFavorite: [mailId: string];
+  toggleSelection: [mailId: string];
+  toggleAllSelection: [];
+  resetMails: [];
 }>();
+
+const handleRefresh = (event: RefresherCustomEvent) => {
+  setTimeout(() => {
+    emit('resetMails');
+    event.target.complete();
+  }, 500);
+};
+const isSelected = (mailId: string) => props.selectedMailIds.has(mailId);
 </script>
 
 <template>
+  <ion-refresher slot="fixed" @ionRefresh="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-list lines="inset" class="mailbox-list">
     <ion-list-header>
-      <ion-label>Recibidos</ion-label>
+      <ion-label class="mailbox-header-label">
+        <ion-icon
+          v-if="hasSelectedMails"
+          :icon="allMailsSelected ? checkboxOutline : squareOutline"
+          class="select-all-icon"
+          @click.stop="emit('toggleAllSelection')"
+        />
+
+        <span>
+          {{ hasSelectedMails ? 'Seleccionar todos' : 'Recibidos' }}
+        </span>
+      </ion-label>
     </ion-list-header>
     <ion-card>
       <template v-if="mails.length > 0">
-        <template v-for="(mail, index) in mails" :key="index">
-          <div class="mail-preview ion-activatable" @click="emit('openMail', mail.id)">
-            <ion-grid>
-              <ion-row class="mail-row">
-                <ion-col size="auto" class="mail-avatar-col">
-                  <ion-avatar>
-                    <img :alt="mail.sender.mail" :src="mail.sender.avatar" />
-                  </ion-avatar>
-                </ion-col>
+        <template v-for="(mail, index) in mails" :key="mail.id">
+          <MobileItem
+            :mail="mail"
+            :selected="isSelected(mail.id)"
+            @open-mail="emit('openMail', $event)"
+            @toggle-favorite="emit('toggleFavorite', $event)"
+            @toggle-selection="emit('toggleSelection', $event)"
+          />
 
-                <ion-col class="mail-text-col">
-                  <ion-card-header class="mail-header">
-                    <ion-card-title class="mail-text" :class="{ unread: !mail.isRead }">
-                      {{ mail.sender.mail }}
-                    </ion-card-title>
-
-                    <ion-card-subtitle class="mail-text" :class="{ unread: !mail.isRead }">
-                      {{ mail.subject }}
-                    </ion-card-subtitle>
-                  </ion-card-header>
-                </ion-col>
-
-                <ion-col size="auto" class="mail-actions-col">
-                  <h5 class="mail-time" :class="{ unread: !mail.isRead }">
-                    {{
-                      new Date(mail.receivedAt).toLocaleTimeString('es-CL', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })
-                    }}
-                  </h5>
-
-                  <ion-icon
-                    :icon="mail.isFavorite ? star : starOutline"
-                    class="icon-favorite"
-                    @click.stop="emit('toggleFavorite', mail.id)"
-                  />
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-            <ion-ripple-effect />
-          </div>
           <hr v-if="index < mails.length - 1" class="mail-separator" />
         </template>
       </template>
@@ -102,8 +94,8 @@ ion-card {
 .ion-margin-top {
   margin-top: 8px;
 }
-.icon-favorite {
-  font-size: 28px;
+.ion-padding {
+  padding: 8px;
 }
 .mail-actions-col {
   flex: 0 0 56px;
@@ -116,9 +108,36 @@ ion-card {
 .mail-header {
   padding: 8px 0;
 }
+.mail-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --background: var(--ion-card-background, var(--ion-background-color));
+  --background-activated: currentColor;
+  --background-activated-opacity: 0.08;
+  --background-focused: currentColor;
+  --background-focused-opacity: 0.08;
+  --ripple-color: currentColor;
+}
+.mail-item.selected {
+  --background: var(--app-secondary-container);
+  --color: var(--app-on-secondary-container);
+}
+
+.mail-item.selected .mail-preview {
+  background: var(--app-secondary-container);
+}
+
+.mail-item.selected .mail-text,
+.mail-item.selected .mail-time,
+.mail-item.selected .icon-favorite {
+  color: var(--app-on-secondary-container);
+}
+
 .mail-preview {
+  width: 100%;
   position: relative;
   overflow: hidden;
+  background: var(--ion-card-background, var(--ion-background-color));
 }
 .mail-row {
   align-items: center;
@@ -143,11 +162,18 @@ ion-card {
 .mail-text-col {
   min-width: 0;
 }
+.mailbox-header-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .mailbox-list {
   --background: transparent;
   background: transparent;
 }
-
+.select-all-icon {
+  font-size: 22px;
+}
 .unread {
   font-weight: 700;
 }

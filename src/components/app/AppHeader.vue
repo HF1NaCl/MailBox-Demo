@@ -30,14 +30,14 @@ import { apps, helpCircleOutline, personCircle, settingsOutline } from 'ionicons
         <ion-searchbar></ion-searchbar>
         <ion-buttons slot="end">
           <ion-button class="ion-display-none ion-display-md-inline">
-            <ion-icon slot="icon-only" :icon="settingsOutline"></ion-icon>
+            <ion-icon slot="icon-only" :icon="settingsOutline" />
           </ion-button>
           <ion-button class="ion-display-none ion-display-md-inline">
-            <ion-icon slot="icon-only" :icon="helpCircleOutline"></ion-icon>
+            <ion-icon slot="icon-only" :icon="helpCircleOutline" />
           </ion-button>
           <ion-button class="ion-display-none ion-display-md-inline"> Actualizar </ion-button>
           <ion-button class="ion-display-none ion-display-md-inline">
-            <ion-icon slot="icon-only" :icon="apps"></ion-icon>
+            <ion-icon slot="icon-only" :icon="apps" />
           </ion-button>
           <ion-button>
             <ion-icon slot="icon-only" :icon="personCircle"></ion-icon>
@@ -57,6 +57,10 @@ ion-toolbar {
 }
 ion-menu-button {
   --color: var(--app-on-surface);
+  --background-focused: transparent;
+  --background-focused-opacity: 0;
+  --background-hover: transparent;
+  --background-hover-opacity: 0;
 }
 ion-title {
   color: var(--app-on-surface);
