@@ -27,6 +27,9 @@ import { apps, helpCircleOutline, personCircle, settingsOutline } from 'ionicons
         </ion-buttons>
       </template>
       <template v-else>
+        <ion-buttons slot="start">
+          <ion-menu-button />
+        </ion-buttons>
         <ion-searchbar></ion-searchbar>
         <ion-buttons slot="end">
           <ion-button class="ion-display-none ion-display-md-inline">

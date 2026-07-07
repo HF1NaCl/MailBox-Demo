@@ -3,6 +3,8 @@
 Proyecto Template usando Ionic para demostrar el uso de un cliente de Correos. Altamente basado en Gmail de Google.
 El proyecto fue creado con fines académico y resolver cómo se haría cada zona con Ionic y con dos puntos de vistas: Web y Android (para iOS por ahora no está implementado).
 
+Puedes ver el ejemplo en vivo aquí: https://hf1nacl.github.io/MailBox-Demo/
+
 ---
 
 ## Tecnologías Utilizadas

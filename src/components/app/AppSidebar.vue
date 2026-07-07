@@ -2,6 +2,7 @@
 import { IonHeader, IonMenu, IonTitle, IonToolbar, IonButtons, IonMenuButton } from '@ionic/vue';
 import { ref } from 'vue';
 import { capacitorPlatform } from '@/composables/capacitor';
+import { isSplitPaneVisible } from '@/composables/isDesktop';
 import SidebarMobile from './sidebar/SidebarMobile.vue';
 import SidebarWeb from './sidebar/SidebarWeb.vue';
 
@@ -10,7 +11,7 @@ const selectedWebIndex = ref(0);
 const isWebCollapsed = ref(false);
 
 const toggleWebSidebar = (event: Event) => {
-  if (capacitorPlatform !== 'web') return;
+  if (capacitorPlatform !== 'web' || !isSplitPaneVisible.value) return;
 
   event.preventDefault();
   event.stopPropagation();
@@ -21,7 +22,9 @@ const toggleWebSidebar = (event: Event) => {
 <template>
   <ion-menu
     content-id="main-content"
-    :class="{ 'sidebar--collapsed': capacitorPlatform === 'web' && isWebCollapsed }"
+    :class="{
+      'sidebar--collapsed': capacitorPlatform === 'web' && isSplitPaneVisible && isWebCollapsed,
+    }"
   >
     <ion-header>
       <ion-toolbar>

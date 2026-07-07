@@ -1,5 +1,4 @@
 import { computed, ref } from 'vue';
-import { capacitorPlatform } from './capacitor';
 
 export type ScreenSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type ScreenCondition = '>' | '>=' | '<' | '<=' | '===' | '!==';
@@ -52,5 +51,5 @@ export const isScreen = (condition: ScreenCondition, size: ScreenSize) => {
   return current === target;
 };
 
-export const splitPaneWhen =
-  capacitorPlatform === 'android' || capacitorPlatform === 'ios' ? '(min-width: 1024px)' : true;
+export const splitPaneWhen = '(min-width: 1024px)';
+export const isSplitPaneVisible = computed(() => ['lg', 'xl'].includes(screenSize.value));

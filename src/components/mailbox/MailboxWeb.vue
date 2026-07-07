@@ -22,7 +22,7 @@ import {
   trashOutline,
 } from 'ionicons/icons';
 import WebItem from './web/WebItem.vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
   mails: Mail[];
@@ -43,6 +43,8 @@ const emit = defineEmits<{
   toggleAllSelection: [];
   resetMails: [];
 }>();
+
+const openAccordions = ref<string[]>(['unread', 'read']);
 </script>
 
 <template>
@@ -82,7 +84,11 @@ const emit = defineEmits<{
         ><ion-icon slot="icon-only" :icon="ellipsisVertical" class="mail-icon" />
       </ion-button>
     </div>
-    <ion-accordion-group :multiple="true" :value="['unread', 'read']">
+    <ion-accordion-group
+      :multiple="true"
+      :value="openAccordions"
+      @ionChange="openAccordions = $event.detail.value"
+    >
       <ion-accordion value="unread">
         <ion-item slot="header">
           <ion-label>No leídos</ion-label>
