@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Mail } from '@/types/Mail';
 import {
   IonAccordion,
   IonAccordionGroup,
@@ -23,26 +22,15 @@ import {
 } from 'ionicons/icons';
 import WebItem from './web/WebItem.vue';
 import { computed, ref } from 'vue';
+import { useMailStore } from '@/stores/mails.js';
+import { storeToRefs } from 'pinia';
 
-const props = defineProps<{
-  mails: Mail[];
-  selectedMailIds: Set<string>;
-  selectedCount: number;
-  hasSelectedMails: boolean;
-}>();
+const store = useMailStore();
+const { mails, selectedMailIds, selectedCount, hasSelectedMails } = storeToRefs(store);
 
-const unreadMails = computed(() => props.mails.filter((mail) => !mail.isRead));
-const readMails = computed(() => props.mails.filter((mail) => mail.isRead));
-
-const isSelected = (mailId: string) => props.selectedMailIds.has(mailId);
-
-const emit = defineEmits<{
-  openMail: [mailId: string];
-  toggleFavorite: [mailId: string];
-  toggleSelection: [mailId: string];
-  toggleAllSelection: [];
-  resetMails: [];
-}>();
+const unreadMails = computed(() => mails.value.filter((mail) => !mail.isRead));
+const readMails = computed(() => mails.value.filter((mail) => mail.isRead));
+const isSelected = (id: string) => selectedMailIds.value.has(id);
 
 const openAccordions = ref<string[]>(['unread', 'read']);
 </script>
@@ -51,7 +39,7 @@ const openAccordions = ref<string[]>(['unread', 'read']);
   <ion-card>
     <div class="mail-toolbar">
       <ion-button fill="clear" shape="round" class="select-button">
-        <span class="select-button-action" @click.stop="emit('toggleAllSelection')">
+        <span class="select-button-action" @click.stop="store.toggleAllMailsSelection()">
           <ion-icon :icon="hasSelectedMails ? checkboxOutline : squareOutline" class="mail-icon" />
         </span>
 
@@ -59,7 +47,7 @@ const openAccordions = ref<string[]>(['unread', 'read']);
           <ion-icon :icon="caretDown" />
         </span>
       </ion-button>
-      <ion-button v-if="selectedCount === 0" fill="clear" shape="round" @click="emit('resetMails')">
+      <ion-button v-if="selectedCount === 0" fill="clear" shape="round" @click="store.resetMails()">
         <ion-icon slot="icon-only" :icon="reloadOutline" class="mail-icon" />
       </ion-button>
       <template v-else>
@@ -97,13 +85,11 @@ const openAccordions = ref<string[]>(['unread', 'read']);
           <template v-if="unreadMails.length > 0">
             <WebItem
               v-for="mail in unreadMails"
-              :key="mail.id"
               :mail="mail"
               :selected="isSelected(mail.id)"
-              unread
-              @open-mail="emit('openMail', $event)"
-              @toggle-selection="emit('toggleSelection', $event)"
-              @toggle-favorite="emit('toggleFavorite', $event)"
+              @open-mail="store.markAsRead"
+              @toggle-selection="store.toggleMailSelection"
+              @toggle-favorite="store.toggleFavorite"
             />
           </template>
           <div v-else class="empty-mails">No hay correos.</div>
@@ -117,12 +103,11 @@ const openAccordions = ref<string[]>(['unread', 'read']);
           <template v-if="readMails.length > 0">
             <WebItem
               v-for="mail in readMails"
-              :key="mail.id"
               :mail="mail"
               :selected="isSelected(mail.id)"
-              @open-mail="emit('openMail', $event)"
-              @toggle-selection="emit('toggleSelection', $event)"
-              @toggle-favorite="emit('toggleFavorite', $event)"
+              @open-mail="store.markAsRead"
+              @toggle-selection="store.toggleMailSelection"
+              @toggle-favorite="store.toggleFavorite"
             />
           </template>
           <div v-else class="empty-mails">No hay correos.</div>

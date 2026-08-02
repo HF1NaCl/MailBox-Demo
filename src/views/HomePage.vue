@@ -5,25 +5,13 @@ import { capacitorPlatform } from '@/composables/capacitor';
 import MailboxMobile from '@/components/mailbox/MailboxMobile.vue';
 import { onMounted } from 'vue';
 import { pencil } from 'ionicons/icons';
-import { useMails } from '@/composables/useMails';
 import MailboxWeb from '@/components/mailbox/MailboxWeb.vue';
+import { useMailStore } from '@/stores/mails';
 
-const {
-  mails,
-  selectedMailIds,
-  selectedCount,
-  allMailsSelected,
-  hasSelectedMails,
-  loadMails,
-  resetMails,
-  toggleMailSelection,
-  toggleAllMailsSelection,
-  toggleFavorite,
-  markAsRead,
-} = useMails();
+const store = useMailStore();
 
-onMounted(async () => {
-  loadMails();
+onMounted(() => {
+  void store.loadMails();
 });
 </script>
 
@@ -32,35 +20,11 @@ onMounted(async () => {
     <AppHeader />
     <ion-content>
       <div id="container">
-        <MailboxMobile
-          v-if="capacitorPlatform !== 'web'"
-          :mails="mails"
-          :selected-mail-ids="selectedMailIds"
-          :selected-count="selectedCount"
-          :has-selected-mails="hasSelectedMails"
-          :all-mails-selected="allMailsSelected"
-          @toggle-selection="toggleMailSelection"
-          @toggle-all-selection="toggleAllMailsSelection"
-          @toggle-favorite="toggleFavorite"
-          @open-mail="markAsRead"
-          @reset-mails="resetMails"
-        />
-        <MailboxWeb
-          v-else
-          :mails="mails"
-          :selected-mail-ids="selectedMailIds"
-          :selected-count="selectedCount"
-          :has-selected-mails="hasSelectedMails"
-          @reset-mails="resetMails"
-          @toggle-selection="toggleMailSelection"
-          @toggle-all-selection="toggleAllMailsSelection"
-          @toggle-favorite="toggleFavorite"
-          @open-mail="markAsRead"
-        />
+        <MailboxMobile v-if="capacitorPlatform !== 'web'" />
+        <MailboxWeb v-else />
       </div>
       <ion-fab
         v-if="capacitorPlatform !== 'web'"
-        :mails="mails"
         slot="fixed"
         vertical="bottom"
         horizontal="end"

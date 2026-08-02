@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './router';
 
 import { IonicVue } from '@ionic/vue';
+import { createPinia } from 'pinia';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -36,7 +37,7 @@ import './theme/variables.css';
 
 import { useMocks } from './config/env';
 
-const app = createApp(App).use(IonicVue).use(router);
+const app = createApp(App).use(IonicVue).use(createPinia()).use(router);
 
 async function enableMocking() {
   if (!useMocks || !import.meta.env.DEV || !('serviceWorker' in navigator)) return;

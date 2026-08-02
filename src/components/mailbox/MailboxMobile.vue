@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Mail } from '@/types/Mail';
 import {
   IonCard,
   IonIcon,
@@ -12,30 +11,18 @@ import {
 } from '@ionic/vue';
 import { checkboxOutline, squareOutline } from 'ionicons/icons';
 import MobileItem from './mobile/MobileItem.vue';
+import { useMailStore } from '@/stores/mails.js';
+import { storeToRefs } from 'pinia';
 
-const props = defineProps<{
-  mails: Mail[];
-  selectedMailIds: Set<string>;
-  selectedCount: number;
-  hasSelectedMails: boolean;
-  allMailsSelected: boolean;
-}>();
+const store = useMailStore();
+const { mails, selectedMailIds, hasSelectedMails, allMailsSelected } = storeToRefs(store);
 
-const emit = defineEmits<{
-  openMail: [mailId: string];
-  toggleFavorite: [mailId: string];
-  toggleSelection: [mailId: string];
-  toggleAllSelection: [];
-  resetMails: [];
-}>();
+const isSelected = (id: string) => selectedMailIds.value.has(id);
 
-const handleRefresh = (event: RefresherCustomEvent) => {
-  setTimeout(() => {
-    emit('resetMails');
-    event.target.complete();
-  }, 500);
+const handleRefresh = async (event: RefresherCustomEvent) => {
+  await store.resetMails();
+  event.target.complete();
 };
-const isSelected = (mailId: string) => props.selectedMailIds.has(mailId);
 </script>
 
 <template>
@@ -49,7 +36,7 @@ const isSelected = (mailId: string) => props.selectedMailIds.has(mailId);
           v-if="hasSelectedMails"
           :icon="allMailsSelected ? checkboxOutline : squareOutline"
           class="select-all-icon"
-          @click.stop="emit('toggleAllSelection')"
+          @click.stop="store.toggleAllMailsSelection()"
         />
 
         <span>
@@ -63,9 +50,9 @@ const isSelected = (mailId: string) => props.selectedMailIds.has(mailId);
           <MobileItem
             :mail="mail"
             :selected="isSelected(mail.id)"
-            @open-mail="emit('openMail', $event)"
-            @toggle-favorite="emit('toggleFavorite', $event)"
-            @toggle-selection="emit('toggleSelection', $event)"
+            @open-mail="store.markAsRead"
+            @toggle-favorite="store.toggleFavorite"
+            @toggle-selection="store.toggleMailSelection"
           />
 
           <hr v-if="index < mails.length - 1" class="mail-separator" />
